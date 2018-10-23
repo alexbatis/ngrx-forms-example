@@ -1,0 +1,13 @@
+<h3>There are currently {{(coursesState$ | async).length}} courses</h3>
+
+<ul>
+  <li *ngFor="let course of (coursesState$ | async); trackBy: trackByIndex; let i=index;">
+    <a [routerLink]="['/courses/edit', course.id]" routerLinkActive="router-link-active">
+      {{course.name}} - {{course.students.length}} student(s)
+    </a>
+  </li>
+  <br>
+  <button mat-raised-button color="primary" [routerLink]="['/courses/edit']" routerLinkActive="router-link-active">
+    Add New Course
+  </button>
+</ul>

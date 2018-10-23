@@ -1,0 +1,105 @@
+<div class="container">
+
+  <div class="row">
+    <div class="col-sm-6">
+      <mat-card class="example-card">
+        <mat-card-header>
+          <mat-card-title>Course Information</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="course">
+            <form id="courseForm" [ngrxFormState]="formState$ | async" (submit)="submit()">
+
+              <!-- COURSE NAME -->
+              <div id="course-name">
+                <mat-form-field>
+                  <input matInput placeholder="Course Name" [ngrxFormControlState]="(formState$ | async).controls.name">
+                  <mat-error *ngIf="(formState$ | async).errors._name?.required">
+                    Course name is required
+                  </mat-error>
+                  <mat-error *ngIf="(formState$ | async).errors._name?.minLength">
+                    Must be at least {{(formState$ | async).errors._name?.minLength.minLength}} characters
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <!-- COURSE  SUBJECT -->
+              <div id="course-subject">
+                <mat-form-field>
+                  <mat-select placeholder="Course Subject" [ngrxFormControlState]="(formState$ | async).controls.subject">
+                    <mat-option value=""></mat-option>
+                    <mat-option value="MATH">Mathematics</mat-option>
+                    <mat-option value="ENGL">English</mat-option>
+                    <mat-option value="HIST">History</mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="(formState$ | async).errors._subject?.required">
+                    A subject is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+            </form>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- STUDENT CARD -->
+    <div class="col-sm-6">
+      <mat-card class="example-card">
+        <mat-card-header>
+          <mat-card-title>Student Information</mat-card-title>
+          <mat-card-subtitle>Add a new student</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+
+          <!-- MIN NUMBER OF STUDENTS ERROR -->
+          <mat-error *ngIf="(formState$ | async).errors._students?.minLength && !(formState$ | async).isUnsubmitted">
+            Must have at least {{(formState$ | async).errors._students?.minLength.minLength}} students in the class
+          </mat-error>
+
+          <!-- COURSE STUDENTS -->
+          <div *ngFor="let student of (formState$ | async).controls.students.controls; trackBy: trackByIndex; let i=index;" class="student">
+            <mat-form-field hintLabel="id : {{student.controls.id.value}}">
+              <input matInput placeholder="Student Name" [ngrxFormControlState]="student.controls.name">
+              <mat-error *ngIf="student.controls.name.errors.required">
+                Student name is required
+              </mat-error>
+              <mat-error *ngIf="student.controls.name.errors.minLength">
+                Must be at least {{student.controls.name.errors.minLength.minLength}} characters
+              </mat-error>
+            </mat-form-field>
+            <br>
+          </div>
+
+          <button mat-raised-button color="primary" type="button" (click)="addNewStudent()">
+            Add New Student
+          </button>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  <div class="row" style="margin-top:55px">
+    <div class="col-xs-12" style="width:100%" align="center">
+
+      <!-- SUBMIT & RESET BUTTONS -->
+      <div class="buttons">
+        <div>
+          <button mat-raised-button type="submit" form="courseForm" color="primary" [disabled]="(formState$ | async).isInvalid && (formState$ | async).isSubmitted">
+            Submit Course
+          </button>
+          <button mat-raised-button type="button" [disabled]="(formState$ | async).isPristine && (formState$ | async).isUntouched && (formState$ | async).isUnsubmitted"
+            (click)="reset()">
+            Reset
+          </button>
+          <button mat-raised-button type="button" color="warn" (click)="deleteCourse()">
+            Delete Course
+          </button>
+          <button mat-raised-button type="button" [routerLink]="['/courses']" routerLinkActive="router-link-active" >
+            Go Back
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
